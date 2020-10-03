@@ -1,6 +1,6 @@
 {
   "name": "ljas-webpack",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -55,10 +55,10 @@
     "webpack-node-externals": "^2.5.2"
   },
   "description": "webpack configuration parts for webpack config compositions",
-  "main": "parts/index.js",
   "exports": {
     "./": "./parts"
   },
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mattlean/ljas-webpack.git"
