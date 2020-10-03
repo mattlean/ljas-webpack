@@ -1,6 +1,6 @@
 {
   "name": "ljas-webpack",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "scripts": {
     "format": "prettier --write *.js *.md",
     "format:check": "prettier --check *.js *.md",
