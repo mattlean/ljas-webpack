@@ -1,12 +1,3 @@
-/**
- * Lean JavaScript Application Starter
- * Webpack Configuration Parts
- *
- * HTML
- * v0.2.0
- *
- * https://github.com/mattlean/lean-js-app-starter
- */
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 /**

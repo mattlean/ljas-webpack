@@ -1,12 +1,3 @@
-/**
- * Lean JavaScript Application Starter
- * Webpack Configuration Parts
- *
- * GENERAL & JAVASCRIPT
- * v0.2.0
- *
- * https://github.com/mattlean/lean-js-app-starter
- */
 const AssetListWebpackPlugin = require("asset-list-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const nodeExternals = require("webpack-node-externals");

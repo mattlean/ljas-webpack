@@ -1,14 +1,4 @@
 /**
- * Lean JavaScript Application Starter
- * Webpack Configuration Parts
- *
- * MEDIA
- * v0.2.0
- *
- * https://github.com/mattlean/lean-js-app-starter
- */
-
-/**
  * Emit images into output directory with file-loader
  *
  * @param {Object} [FnParams={}] Object of function parameters

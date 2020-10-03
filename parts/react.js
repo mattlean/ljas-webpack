@@ -1,14 +1,4 @@
 /**
- * Lean JavaScript Application Starter
- * Webpack Configuration Parts
- *
- * REACT
- * v0.2.0
- *
- * https://github.com/mattlean/lean-js-app-starter
- */
-
-/**
  * Use SVGs as React components and inline them with @svgr/webpack
  *
  * @param {Object} [FnParams={}] Object of function parameters

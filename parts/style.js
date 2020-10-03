@@ -1,12 +1,3 @@
-/**
- * Lean JavaScript Application Starter
- * Webpack Configuration Parts
- *
- * STYLE
- * v0.2.0
- *
- * https://github.com/mattlean/lean-js-app-starter
- */
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const PurgecssPlugin = require("purgecss-webpack-plugin");
 
