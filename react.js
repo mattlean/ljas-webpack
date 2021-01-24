@@ -4,7 +4,7 @@
  * @param {Object} [FnParams={}] Object of function parameters
  * @param {Object} [FnParams.options] @svgr/webpack options
  * @param {RegExp} [FnParams.test=/\.svg$/i] Rule test value
- * @return Module config for @svgr/webpack
+ * @return {Object} Module config for @svgr/webpack
  */
 exports.inlineReactSVGs = ({ options, test } = {}) => {
   if (!test) test = /\.svg$/i;

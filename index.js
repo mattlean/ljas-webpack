@@ -127,7 +127,7 @@ exports.setFreeVariable = (key, value) => {
  * Set mode to determine which webpack optimizations to use
  *
  * @param {string} [mode] webpack mode configuration optional value
- * @return mode config
+ * @return {Object} mode config
  */
 exports.setMode = (mode) => ({
   mode,
@@ -137,7 +137,7 @@ exports.setMode = (mode) => ({
  * Setup development server with webpack-dev-server
  *
  * @param {Object} [devServer] devServer options
- * @return devServer config
+ * @return {Object} devServer config
  */
 exports.setupDevServer = (devServer) => ({
   devServer,
@@ -146,7 +146,7 @@ exports.setupDevServer = (devServer) => ({
 /**
  * Split vendor dependencies from main bundle
  *
- * @return optimization config
+ * @return {Object} optimization config
  */
 exports.splitVendor = () => ({
   optimization: {
