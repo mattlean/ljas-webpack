@@ -5,7 +5,7 @@
   "license": "MIT",
   "main": "dist/index.js",
   "scripts": {
-    "doc": "jsdoc dist/*",
+    "doc": "jsdoc -d ./docs dist/*",
     "format": "prettier --check dist/*.js **/*.md",
     "format:write": "yarn format --write",
     "test": "webpack --config=test/webpack.config",
