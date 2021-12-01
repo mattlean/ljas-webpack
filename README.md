@@ -16,7 +16,7 @@ To compose custom webpack configs with these parts, it is recommended that you u
 
 ## Documentation
 
-You can view the [JSDoc](https://jsdoc.app) in [this repository's `/out` directory](./out) or at https://mattlean.github.io/ljas-webpack.
+You can view the [JSDoc](https://jsdoc.app) in [this repository's `/docs` directory](./docs) or at https://mattlean.github.io/ljas-webpack.
 
 ## License
 
