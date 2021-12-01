@@ -1,122 +1,54 @@
-const AssetListWebpackPlugin = require("asset-list-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
-const nodeExternals = require("webpack-node-externals");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const { DefinePlugin } = require("webpack");
-const html = require("./html");
-const js = require("./js");
-const media = require("./media");
-const react = require("./react");
-const style = require("./style");
-
-module.exports = {
-  ...html,
-  ...js,
-  ...media,
-  ...react,
-  ...style,
-};
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 /**
- * Delete contents of the output directory using clean-webpack-plugin
- *
- * @param {Object} options clean-webpack-plugin options
- * @return {Object} Plugin config for clean-webpack-plugin
+ * Configure html-webpack-plugin to handle creation of HTML.
+ * @param {Object} [options] html-webpack-plugin options
+ * @return {Object} html-webpack-plugin config
  */
-module.exports.cleanOutput = (options) => ({
-  plugins: [new CleanWebpackPlugin(options)],
-});
+exports.buildHTML = (options) => ({
+  plugins: [new HtmlWebpackPlugin(options)],
+})
 
 /**
- * Copy files from one location to another with copy-webpack-plugin
- *
- * @param {Array} [patterns] Array of patterns
- * @param {Object} [options] copy-webpack-plugin options
- * @return {Object} Plugin config for copy-webpack-plugin
+ * Configure clean option for output.
+ * @param {boolean|Object} [clean=true] clean option
+ * @return {Object} Output config
  */
-module.exports.copyFiles = (patterns, options) => ({
-  plugins: [
-    new CopyPlugin({
-      patterns,
-      options,
-    }),
-  ],
-});
+exports.cleanOutput = (clean = true) => ({
+  output: { clean },
+})
 
 /**
- * Generate bundle asset list with asset-list-webpack-plugin
- *
- * @param {Object} [FnParams={}] Object of function parameters
- * @param {Object} [FnParams.format] Format of generated JSON file
- * @param {Object} [FnParams.key] Set keys used for JSON file
- * @param {Object} [FnParams.name] Name of generated JSON file
- * @return {Object} Plugin config for asset-list-webpack-plugin
- */
-module.exports.genAssetList = ({ format, key, name } = {}) => ({
-  plugins: [new AssetListWebpackPlugin({ format, key, name })],
-});
-
-/**
- * Exclude modules from bundle with webpack-node-externals
- *
- * @param {Object} [options] webpack-node-externals options
- * @return {Object} externals config
- */
-module.exports.ignoreNodeModules = (options) => ({
-  externals: [nodeExternals(options)],
-});
-
-/**
- * Set free variable with DefinePlugin
- *
- * @param {string} key Free variable key
- * @param {*} value Free variable value
- * @return {Object} Plugin config
- */
-module.exports.setFreeVariable = (key, value) => {
-  const env = {};
-  env[key] = JSON.stringify(value);
-
-  return {
-    plugins: [new DefinePlugin(env)],
-  };
-};
-
-/**
- * Set mode to determine which webpack optimizations to use
- *
- * @param {string} [mode] webpack mode configuration optional value
- * @return {Object} mode config
- */
-module.exports.setMode = (mode) => ({
-  mode,
-});
-
-/**
- * Setup development server with webpack-dev-server
- *
- * @param {Object} [devServer] devServer options
+ * Setup webpack-dev-server.
+ * @param {Object} [devServer] webpack-dev-server options
  * @return {Object} devServer config
  */
-module.exports.setupDevServer = (devServer) => ({
-  devServer,
-});
+exports.setupDevServer = (devServer) => ({ devServer })
 
 /**
- * Split vendor dependencies from main bundle
- *
- * @return {Object} optimization config
+ * Handle CSS and inject into the DOM.
+ * @param {Object} [argObj] Argument object
+ * @param {Object} [argObj.rule] webpack rule
+ * @param {RegExp} [argObj.rule.test=/\.css$/i] webpack rule test assertion
+ * @param {Object} [argObj.styleLoaderOptions] style-loader options
+ * @param {Object} [argObj.cssLoaderOptions] css-loader options
+ * @return {Object} webpack module that configures css-loader & style-loader
  */
-module.exports.splitVendor = () => ({
-  optimization: {
-    splitChunks: {
-      cacheGroups: {
-        commons: {
-          test: /[\\/]node_modules[\\/]/,
-          name: "vendor",
-          chunks: "initial",
-        },
+exports.injectCSS = ({
+  rule = {},
+  cssLoaderOptions,
+  styleLoaderOptions,
+} = {}) => ({
+  module: {
+    rules: [
+      {
+        ...rule,
+        test: (rule && rule.test) || /\.css$/i,
+        use: [
+          { loader: 'style-loader', options: styleLoaderOptions },
+          { loader: 'css-loader', options: cssLoaderOptions },
+        ],
       },
-    },
+    ],
   },
-});
+})

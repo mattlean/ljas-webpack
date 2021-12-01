@@ -1,4 +1,2 @@
 node_modules/
-test/output/
-.eslintcache
-yarn-error.log
+test/public/
