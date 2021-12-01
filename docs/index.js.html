@@ -26,128 +26,160 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const AssetListWebpackPlugin = require("asset-list-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
-const nodeExternals = require("webpack-node-externals");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const { DefinePlugin } = require("webpack");
-const html = require("./html");
-const js = require("./js");
-const media = require("./media");
-const react = require("./react");
-const style = require("./style");
-
-module.exports = {
-  ...html,
-  ...js,
-  ...media,
-  ...react,
-  ...style,
-};
+            <pre class="prettyprint source linenums"><code>const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 /**
- * Delete contents of the output directory using clean-webpack-plugin
- *
- * @param {Object} options clean-webpack-plugin options
- * @return {Object} Plugin config for clean-webpack-plugin
+ * Configure [html-webpack-plugin](https://webpack.js.org/plugins/html-webpack-plugin) to handle creation of HTML.
+ * @param {Object} [options] html-webpack-plugin options
+ * @return {Object} html-webpack-plugin config
  */
-module.exports.cleanOutput = (options) => ({
-  plugins: [new CleanWebpackPlugin(options)],
-});
+exports.buildHTML = (options) => ({
+  plugins: [new HtmlWebpackPlugin(options)],
+})
 
 /**
- * Copy files from one location to another with copy-webpack-plugin
- *
- * @param {Array} [patterns] Array of patterns
- * @param {Object} [options] copy-webpack-plugin options
- * @return {Object} Plugin config for copy-webpack-plugin
+ * Configure [webpack's clean option for output](https://webpack.js.org/configuration/output/#outputclean).
+ * @param {boolean|Object} [clean=true] clean option
+ * @return {Object} webpack output config
  */
-module.exports.copyFiles = (patterns, options) => ({
-  plugins: [
-    new CopyPlugin({
-      patterns,
-      options,
-    }),
-  ],
-});
+exports.cleanOutput = (clean = true) => ({
+  output: { clean },
+})
 
 /**
- * Generate bundle asset list with asset-list-webpack-plugin
+ * Transpile JavaScript files using [Babel](https://babeljs.io) with [babel-loader](https://webpack.js.org/loaders/babel-loader).
  *
- * @param {Object} [FnParams={}] Object of function parameters
- * @param {Object} [FnParams.format] Format of generated JSON file
- * @param {Object} [FnParams.key] Set keys used for JSON file
- * @param {Object} [FnParams.name] Name of generated JSON file
- * @return {Object} Plugin config for asset-list-webpack-plugin
+ * Supports the following LJAS presets:
+ * - `"default"`: Sets up [@babel/preset-env](https://babeljs.io/docs/en/babel-preset-env) with the `modules` option set to false
+ * - `"react"`: Sets up [@babel/preset-env](https://babeljs.io/docs/en/babel-preset-env) (with `modules` set to false) &amp; [@babel/preset-react](https://babeljs.io/docs/en/babel-preset-react). If the `BABEL_ENV` environment variable is set to `"development"`, then [@babel/preset-react](https://babeljs.io/docs/en/babel-preset-react)'s development option is enabled.
+ * - `"ts"`: Sets up [@babel/preset-env](https://babeljs.io/docs/en/babel-preset-env) (with `modules` set to false) &amp; [@babel/preset-typescript](https://babeljs.io/docs/en/babel-preset-typescript). Because Babel does not support type checking, [Fork TS Checker Webpack Plugin](https://github.com/TypeStrong/fork-ts-checker-webpack-plugin#readme) is enabled.
+ * - `"ts+react"`: Sets up [@babel/preset-env](https://babeljs.io/docs/en/babel-preset-env) (with `modules` set to false), [@babel/preset-react](https://babeljs.io/docs/en/babel-preset-react), and [@babel/preset-typescript](https://babeljs.io/docs/en/babel-preset-typescript). If the `BABEL_ENV` environment variable is set to `"development"`, then [@babel/preset-react](https://babeljs.io/docs/en/babel-preset-react)'s development option is enabled. Because Babel does not support type checking, [Fork TS Checker Webpack Plugin](https://github.com/TypeStrong/fork-ts-checker-webpack-plugin#readme) is enabled.
+ * @param {'default'|'react'|'ts'|Object} [arg='default'] Can be passed in an argument object or a string corresponding to a supported LJAS preset
+ * @param {Object} [arg.rule] webpack rule. Overrides options when a conflict occurs.
+ * @param {RegExp} [arg.rule.test=/\.m?js$/i] webpack rule test assertion
+ * @param {Object} [arg.options] babel-loader options
+ * @param {Object} [arg.plugins] webpack plugins options
+ * @param {Object} [arg.resolve] webpack resolve options
+ * @return {Object} babel-loader config
  */
-module.exports.genAssetList = ({ format, key, name } = {}) => ({
-  plugins: [new AssetListWebpackPlugin({ format, key, name })],
-});
+exports.compileBabel = (arg) => {
+  const babelRule = {
+    test: /\.m?js$/i,
+    use: {
+      loader: 'babel-loader',
+    },
+  }
+
+  const config = {
+    module: {
+      rules: [babelRule],
+    },
+  }
+
+  if (
+    arg === 'default' ||
+    !arg ||
+    (typeof arg === 'object' &amp;&amp; Object.keys(arg).length === 0)
+  ) {
+    babelRule.use.options = {
+      presets: [['@babel/preset-env', { modules: false }]],
+    }
+  } else if (arg === 'react') {
+    config.resolve = {
+      extensions: ['.js', '.jsx', '.mjs'],
+    }
+    babelRule.test = /\.m?jsx?$/i
+    babelRule.use.options = {
+      presets: [
+        ['@babel/preset-env', { modules: false }],
+        [
+          '@babel/preset-react',
+          { development: process.env.BABEL_ENV === 'development' },
+        ],
+      ],
+    }
+  } else if (arg === 'ts') {
+    config.plugins = [new ForkTsCheckerWebpackPlugin()]
+    config.resolve = {
+      extensions: ['.mjs', '.js', '.jsx', '.ts'],
+    }
+    babelRule.test = /\.(m?j|t)s$/i
+    babelRule.use.options = {
+      presets: [
+        ['@babel/preset-env', { modules: false }],
+        '@babel/preset-typescript',
+      ],
+    }
+  } else if (arg === 'ts+react') {
+    config.plugins = [new ForkTsCheckerWebpackPlugin()]
+    config.resolve = {
+      extensions: ['.js', '.jsx', '.mjs', '.ts', '.tsx'],
+    }
+    babelRule.test = /\.(m?j|t)sx?$/i
+    babelRule.use.options = {
+      presets: [
+        ['@babel/preset-env', { modules: false }],
+        [
+          '@babel/preset-react',
+          { development: process.env.BABEL_ENV === 'development' },
+        ],
+        '@babel/preset-typescript',
+      ],
+    }
+  } else if (typeof arg === 'object') {
+    for (const argKey of Object.keys(arg)) {
+      if (argKey === 'options') {
+        babelRule.use.options = arg.options
+      } else if (argKey === 'rule') {
+        for (const ruleKey of Object.keys(arg.rule)) {
+          babelRule[ruleKey] = arg.rule[ruleKey]
+        }
+      } else if (argKey === 'plugins') {
+        config.plugins = arg.plugins
+      } else if (argKey === 'resolve') {
+        config.resolve = arg.resolve
+      }
+    }
+  }
+
+  return config
+}
 
 /**
- * Exclude modules from bundle with webpack-node-externals
- *
- * @param {Object} [options] webpack-node-externals options
- * @return {Object} externals config
+ * Handle CSS with [css-loader](https://webpack.js.org/loaders/css-loader) and inject into the DOM with [style-loader](https://webpack.js.org/loaders/style-loader).
+ * @param {Object} [argObj] Argument object
+ * @param {Object} [argObj.rule] webpack rule. Overrides styleLoaderOptions &amp; cssLoaderOptions when a conflict occurs.
+ * @param {RegExp} [argObj.rule.test=/\.css$/i] webpack rule test assertion
+ * @param {Object} [argObj.styleLoaderOptions] style-loader options
+ * @param {Object} [argObj.cssLoaderOptions] css-loader options
+ * @return {Object} css-loader &amp; style-loader configs
  */
-module.exports.ignoreNodeModules = (options) => ({
-  externals: [nodeExternals(options)],
-});
+exports.injectCSS = ({
+  rule = {},
+  cssLoaderOptions,
+  styleLoaderOptions,
+} = {}) => ({
+  module: {
+    rules: [
+      {
+        test: (rule &amp;&amp; rule.test) || /\.css$/i,
+        use: [
+          { loader: 'style-loader', options: styleLoaderOptions },
+          { loader: 'css-loader', options: cssLoaderOptions },
+        ],
+        ...rule,
+      },
+    ],
+  },
+})
 
 /**
- * Set free variable with DefinePlugin
- *
- * @param {string} key Free variable key
- * @param {*} value Free variable value
- * @return {Object} Plugin config
- */
-module.exports.setFreeVariable = (key, value) => {
-  const env = {};
-  env[key] = JSON.stringify(value);
-
-  return {
-    plugins: [new DefinePlugin(env)],
-  };
-};
-
-/**
- * Set mode to determine which webpack optimizations to use
- *
- * @param {string} [mode] webpack mode configuration optional value
- * @return {Object} mode config
- */
-module.exports.setMode = (mode) => ({
-  mode,
-});
-
-/**
- * Setup development server with webpack-dev-server
- *
- * @param {Object} [devServer] devServer options
+ * Setup [webpack-dev-server](https://webpack.js.org/configuration/dev-server).
+ * @param {Object} [devServer] webpack-dev-server options
  * @return {Object} devServer config
  */
-module.exports.setupDevServer = (devServer) => ({
-  devServer,
-});
-
-/**
- * Split vendor dependencies from main bundle
- *
- * @return {Object} optimization config
- */
-module.exports.splitVendor = () => ({
-  optimization: {
-    splitChunks: {
-      cacheGroups: {
-        commons: {
-          test: /[\\/]node_modules[\\/]/,
-          name: "vendor",
-          chunks: "initial",
-        },
-      },
-    },
-  },
-});
+exports.setupDevServer = (devServer) => ({ devServer })
 </code></pre>
         </article>
     </section>
@@ -158,13 +190,13 @@ module.exports.splitVendor = () => ({
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#buildStyles">buildStyles</a></li><li><a href="global.html#cleanOutput">cleanOutput</a></li><li><a href="global.html#compileJS">compileJS</a></li><li><a href="global.html#copyFiles">copyFiles</a></li><li><a href="global.html#emitMedia">emitMedia</a></li><li><a href="global.html#genAssetList">genAssetList</a></li><li><a href="global.html#genSourceMaps">genSourceMaps</a></li><li><a href="global.html#ignoreNodeModules">ignoreNodeModules</a></li><li><a href="global.html#injectStyles">injectStyles</a></li><li><a href="global.html#inlineMedia">inlineMedia</a></li><li><a href="global.html#inlineReactSVGs">inlineReactSVGs</a></li><li><a href="global.html#loadHTMLAsString">loadHTMLAsString</a></li><li><a href="global.html#minifyJS">minifyJS</a></li><li><a href="global.html#purgeCSS">purgeCSS</a></li><li><a href="global.html#setFreeVariable">setFreeVariable</a></li><li><a href="global.html#setMode">setMode</a></li><li><a href="global.html#setupDevServer">setupDevServer</a></li><li><a href="global.html#setupHTML">setupHTML</a></li><li><a href="global.html#splitVendor">splitVendor</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#buildHTML">buildHTML</a></li><li><a href="global.html#cleanOutput">cleanOutput</a></li><li><a href="global.html#compileBabel">compileBabel</a></li><li><a href="global.html#injectCSS">injectCSS</a></li><li><a href="global.html#setupDevServer">setupDevServer</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Sun Jan 24 2021 17:35:06 GMT-0800 (Pacific Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Dec 01 2021 21:59:07 GMT-0800 (Pacific Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>
