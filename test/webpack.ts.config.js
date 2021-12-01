@@ -10,23 +10,25 @@ const {
 
 module.exports = merge(
   {
-    entry: path.resolve(__dirname, 'main.js'),
+    entry: path.resolve(__dirname, 'ts-main.ts'),
 
     output: {
-      path: path.resolve(__dirname, 'public'),
+      path: path.resolve(__dirname, 'ts'),
       filename: 'script.js',
     },
 
     mode: 'development',
   },
 
-  compileBabel(),
+  compileBabel('ts'),
 
   buildHTML(),
 
   injectCSS(),
 
-  setupDevServer(),
+  setupDevServer({
+    static: path.resolve(__dirname, 'ts'),
+  }),
 
   cleanOutput()
 )
