@@ -5,12 +5,12 @@
   "license": "MIT",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "webpack serve --config test/webpack.config.js",
     "format": "npm run format:check",
     "format:check": "prettier --check dist/**/*.js test/**/*.js *.md",
     "format:write": "prettier --write dist/**/*.js test/**/*.js *.md",
     "lint": "eslint dist/**/*.js test/**/*.js",
-    "test": "webpack --config test/webpack.config.js"
+    "test": "webpack --config test/webpack.config.js",
+    "test:dev": "webpack serve --config test/webpack.config.js --open"
   },
   "devDependencies": {
     "eslint": "^8.3.0",
@@ -19,6 +19,9 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.4",
+    "babel-loader": "^8.2.3",
     "css-loader": "^6.5.1",
     "html-webpack-plugin": "^5.5.0",
     "style-loader": "^3.3.1",
