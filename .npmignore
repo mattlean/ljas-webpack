@@ -1,0 +1,10 @@
+node_modules/
+test/
+.eslintignore
+.eslintrc.js
+.gitignore
+.prettierignore
+.prettierrc.json
+jsdoc-conf.json
+ljas-webpack.code-workspace
+tsconfig.json
