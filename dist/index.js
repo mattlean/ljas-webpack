@@ -21,6 +21,11 @@ exports.cleanOutput = (clean = true) => ({
 
 /**
  * Transpile JavaScript files using Babel with babel-loader.
+ *
+ * Supports the following LJAS presets:
+ * - "default": Sets up @babel/preset-env with the modules option set to false
+ * - "ts": Sets up @babel/preset-env & @babel/preset-typescript. Because Babel does not support type checking, Fork TS Checker Webpack Plugin is enabled.
+ *
  * @param {'default'|'ts'|Object} [arg='default'] Can be passed in an argument object or a string corresponding to a supported LJAS preset
  * @param {Object} [arg.rule] webpack rule. Overrides options when a conflict occurs.
  * @param {RegExp} [arg.rule.test=/\.m?js$/i] webpack rule test assertion
