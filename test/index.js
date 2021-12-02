@@ -1,9 +1,4 @@
 import './style.css'
+import createDiv from './createDiv'
 
-function component() {
-  const element = document.createElement('div')
-  element.innerHTML = 'Hello, World!'
-  return element
-}
-
-document.body.appendChild(component())
+document.body.appendChild(createDiv())

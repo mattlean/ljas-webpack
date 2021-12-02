@@ -1,3 +1,4 @@
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 /**
@@ -20,33 +21,66 @@ exports.cleanOutput = (clean = true) => ({
 
 /**
  * Transpile JavaScript files using Babel with babel-loader.
- * @param {Object} [argObj] Argument object
- * @param {Object} [argObj.rule] webpack rule. Overrides styleLoaderOptions & cssLoaderOptions when a conflict occurs.
- * @param {RegExp} [argObj.rule.test=/\.m?js$/i] webpack rule test assertion
- * @param {Object} [argObj.options] babel-loader options
+ * @param {'default'|'ts'|Object} [arg='default'] Can be passed in an argument object or a string corresponding to a supported LJAS preset
+ * @param {Object} [arg.rule] webpack rule. Overrides options when a conflict occurs.
+ * @param {RegExp} [arg.rule.test=/\.m?js$/i] webpack rule test assertion
+ * @param {Object} [arg.options] babel-loader options
+ * @param {Object} [arg.plugins] webpack plugins options
+ * @param {Object} [arg.resolve] webpack resolve options
  * @return {Object} babel-loader config
  */
-exports.compileBabel = ({ rule = {}, options } = {}) => ({
-  module: {
-    rules: [
-      {
-        test: (rule && rule.test) || /\.m?js$/i,
-        use: {
-          loader: 'babel-loader',
-          options,
-        },
-        ...rule,
-      },
-    ],
-  },
-})
+exports.compileBabel = (arg) => {
+  const babelRule = {
+    test: /\.m?js$/i,
+    use: {
+      loader: 'babel-loader',
+    },
+  }
 
-/**
- * Setup webpack-dev-server.
- * @param {Object} [devServer] webpack-dev-server options
- * @return {Object} devServer config
- */
-exports.setupDevServer = (devServer) => ({ devServer })
+  const config = {
+    module: {
+      rules: [babelRule],
+    },
+  }
+
+  if (
+    arg === 'default' ||
+    !arg ||
+    (typeof arg === 'object' && Object.keys(arg).length === 0)
+  ) {
+    babelRule.use.options = {
+      presets: [['@babel/preset-env', { modules: false }]],
+    }
+  } else if (arg === 'ts') {
+    config.plugins = [new ForkTsCheckerWebpackPlugin()]
+    config.resolve = {
+      extensions: ['.mjs', '.js', '.ts'],
+    }
+    babelRule.test = /\.(m?j|t)s$/i
+    babelRule.use.options = {
+      presets: [
+        ['@babel/preset-env', { modules: false }],
+        '@babel/preset-typescript',
+      ],
+    }
+  } else if (typeof arg === 'object') {
+    for (const argKey of Object.keys(arg)) {
+      if (argKey === 'options') {
+        babelRule.use.options = arg.options
+      } else if (argKey === 'rule') {
+        for (const ruleKey of Object.keys(arg.rule)) {
+          babelRule[ruleKey] = arg.rule[ruleKey]
+        }
+      } else if (argKey === 'plugins') {
+        config.plugins = arg.plugins
+      } else if (argKey === 'resolve') {
+        config.resolve = arg.resolve
+      }
+    }
+  }
+
+  return config
+}
 
 /**
  * Handle CSS and inject into the DOM.
@@ -75,3 +109,10 @@ exports.injectCSS = ({
     ],
   },
 })
+
+/**
+ * Setup webpack-dev-server.
+ * @param {Object} [devServer] webpack-dev-server options
+ * @return {Object} devServer config
+ */
+exports.setupDevServer = (devServer) => ({ devServer })
