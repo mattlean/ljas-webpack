@@ -1,5 +1,13 @@
-export default function createDiv(textContent = 'Hello, World!') {
+export default function createDiv(textContent = 'Hello, World!', id) {
   const element = document.createElement('div')
-  element.textContent = textContent
+
+  if (textContent) {
+    element.textContent = textContent
+  }
+
+  if (id) {
+    element.setAttribute('id', id)
+  }
+
   return element
 }

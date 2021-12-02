@@ -1,28 +1,38 @@
 {
   "name": "ljas-webpack",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "description": "webpack configuration parts for webpack config compositions",
   "license": "MIT",
   "main": "dist/index.js",
   "scripts": {
+    "doc": "jsdoc -c jsdoc-conf.json -d ./docs dist/*",
     "format": "npm run format:check",
     "format:check": "prettier --check dist/**/*.js test/**/*.js *.md",
     "format:write": "prettier --write dist/**/*.js test/**/*.js *.md",
     "lint": "eslint dist/**/*.js test/**/*.js",
-    "test": "webpack --config test/webpack.config.js",
+    "react-test": "webpack --config test/webpack.react.config.js --mode=\"production\"",
+    "react-test:dev": "webpack serve --config test/webpack.react.config.js --open",
+    "test": "webpack --config test/webpack.config.js --mode=\"production\"",
     "test:dev": "webpack serve --config test/webpack.config.js --open",
-    "ts-test": "webpack --config test/ts.config.js",
-    "ts-test:dev": "webpack serve --config test/ts.config.js --open"
+    "ts-test": "webpack --config test/webpack.ts.config.js --mode=\"production\"",
+    "ts-test:dev": "webpack serve --config test/webpack.ts.config.js --open"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.5.0",
+    "@typescript-eslint/parser": "^5.5.0",
     "eslint": "^8.3.0",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-react": "^7.27.1",
+    "jsdoc": "^3.6.7",
     "prettier": "2.5.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.4",
+    "@babel/preset-react": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
     "babel-loader": "^8.2.3",
     "css-loader": "^6.5.1",
@@ -58,6 +68,7 @@
     "app",
     "webpack",
     "configuration",
-    "config"
+    "config",
+    "parts"
   ]
 }
