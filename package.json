@@ -8,9 +8,10 @@
   "scripts": {
     "doc": "jsdoc -c jsdoc-conf.json -d ./docs dist/*",
     "format": "npm run format:check",
-    "format:check": "prettier --check dist/**/*.js test/**/*.js *.md",
-    "format:write": "prettier --write dist/**/*.js test/**/*.js *.md",
-    "lint": "eslint dist/**/*.js test/**/*.js",
+    "format:check": "prettier --check dist/**/*.js test/**/*.js  test/**/*.ts *.md",
+    "format:write": "prettier --write dist/**/*.js test/**/*.js  test/**/*.ts *.md",
+    "lint": "eslint dist/**/*.js test/**/*.js test/**/*.ts",
+    "lint:fix": "npm run lint -- --fix",
     "react-test": "webpack --config test/webpack.react.config.js --mode=\"production\"",
     "react-test:dev": "webpack serve --config test/webpack.react.config.js --open",
     "test": "webpack --config test/webpack.config.js --mode=\"production\"",
