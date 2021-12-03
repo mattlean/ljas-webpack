@@ -1,8 +1,9 @@
+const CopyPlugin = require('copy-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 /**
- * Configure [html-webpack-plugin](https://webpack.js.org/plugins/html-webpack-plugin) to handle creation of HTML.
+ * Build HTML with [html-webpack-plugin](https://webpack.js.org/plugins/html-webpack-plugin).
  * @param {Object} [options] html-webpack-plugin options
  * @return {Object} html-webpack-plugin config
  */
@@ -117,6 +118,15 @@ exports.compileBabel = (arg) => {
 
   return config
 }
+
+/**
+ * Copy files to the build directory using [copy-webpack-plugin](https://webpack.js.org/plugins/copy-webpack-plugin).
+ * @param {Object} [options] copy-webpack-plugin options
+ * @return {Object} copy-webpack-plugin config
+ */
+exports.copyFiles = (options) => ({
+  plugins: [new CopyPlugin(options)],
+})
 
 /**
  * Handle CSS with [css-loader](https://webpack.js.org/loaders/css-loader) and inject into the DOM with [style-loader](https://webpack.js.org/loaders/style-loader).

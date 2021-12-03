@@ -1,6 +1,6 @@
 {
   "name": "ljas-webpack",
-  "version": "0.1.0-experimental.2",
+  "version": "0.1.0-experimental.3",
   "description": "webpack configuration parts for webpack config compositions",
   "license": "MIT",
   "author": "Matthew Lean <matt@mattlean.com>",
@@ -27,6 +27,7 @@
     "@babel/preset-react": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
     "babel-loader": "^8.2.3",
+    "copy-webpack-plugin": "^10.0.0",
     "css-loader": "^6.5.1",
     "fork-ts-checker-webpack-plugin": "^6.5.0",
     "html-webpack-plugin": "^5.5.0",
