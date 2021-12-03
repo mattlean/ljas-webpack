@@ -1,15 +1,17 @@
 {
   "name": "ljas-webpack",
-  "version": "0.1.0-experimental.2",
+  "version": "0.1.0-experimental.3",
   "description": "webpack configuration parts for webpack config compositions",
   "license": "MIT",
+  "author": "Matthew Lean <matt@mattlean.com>",
   "main": "dist/index.js",
   "scripts": {
     "doc": "jsdoc -c jsdoc-conf.json -d ./docs dist/*",
     "format": "npm run format:check",
-    "format:check": "prettier --check dist/**/*.js test/**/*.js *.md",
-    "format:write": "prettier --write dist/**/*.js test/**/*.js *.md",
-    "lint": "eslint dist/**/*.js test/**/*.js",
+    "format:check": "prettier --check dist/**/*.js test/**/*.js  test/**/*.ts *.md",
+    "format:write": "prettier --write dist/**/*.js test/**/*.js  test/**/*.ts *.md",
+    "lint": "eslint dist/**/*.js test/**/*.js test/**/*.ts",
+    "lint:fix": "npm run lint -- --fix",
     "react-test": "webpack --config test/webpack.react.config.js --mode=\"production\"",
     "react-test:dev": "webpack serve --config test/webpack.react.config.js --open",
     "test": "webpack --config test/webpack.config.js --mode=\"production\"",
@@ -18,6 +20,22 @@
     "ts-test:dev": "webpack serve --config test/webpack.ts.config.js --open",
     "tsx-test": "webpack --config test/webpack.tsx.config.js --mode=\"production\"",
     "tsx-test:dev": "webpack serve --config test/webpack.tsx.config.js --open"
+  },
+  "peerDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-react": "^7.16.0",
+    "@babel/preset-typescript": "^7.16.0",
+    "babel-loader": "^8.2.3",
+    "copy-webpack-plugin": "^10.0.0",
+    "css-loader": "^6.5.1",
+    "fork-ts-checker-webpack-plugin": "^6.5.0",
+    "html-webpack-plugin": "^5.5.0",
+    "style-loader": "^3.3.1",
+    "typescript": "^4.5.2",
+    "webpack": "^5.64.4",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.6.0"
   },
   "devDependencies": {
     "@types/react": "^17.0.37",
@@ -33,21 +51,6 @@
     "react-dom": "^17.0.2",
     "webpack-merge": "^5.8.0"
   },
-  "peerDependencies": {
-    "@babel/core": "^7.16.0",
-    "@babel/preset-env": "^7.16.4",
-    "@babel/preset-react": "^7.16.0",
-    "@babel/preset-typescript": "^7.16.0",
-    "babel-loader": "^8.2.3",
-    "css-loader": "^6.5.1",
-    "fork-ts-checker-webpack-plugin": "^6.5.0",
-    "html-webpack-plugin": "^5.5.0",
-    "style-loader": "^3.3.1",
-    "typescript": "^4.5.2",
-    "webpack": "^5.64.4",
-    "webpack-cli": "^4.9.1",
-    "webpack-dev-server": "^4.6.0"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mattlean/ljas-webpack.git"
@@ -56,7 +59,6 @@
     "url": "https://github.com/mattlean/ljas-webpack/issues"
   },
   "homepage": "https://github.com/mattlean/ljas-webpack#readme",
-  "author": "Matthew Lean <matt@mattlean.com>",
   "keywords": [
     "ljas-webpack",
     "lean-js-app-starter",

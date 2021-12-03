@@ -3,6 +3,7 @@ const { merge } = require('webpack-merge')
 const {
   buildHTML,
   cleanOutput,
+  copyFiles,
   compileBabel,
   injectCSS,
   setupDevServer,
@@ -27,6 +28,10 @@ module.exports = merge(
   injectCSS(),
 
   setupDevServer(),
+
+  copyFiles({
+    patterns: [{ from: 'test/foo.txt', to: 'foo-copy.txt' }],
+  }),
 
   cleanOutput()
 )
