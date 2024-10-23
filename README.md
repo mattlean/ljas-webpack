@@ -1,3 +1,5 @@
+**THIS PROJECT HAS MOVED TO THE [LEAN JAVASCRIPT APPLICATION STARTER MONOREPO](https://github.com/mattlean/lean-js-app-starter/tree/master/ljas-webpack).**
+
 # Lean JS App Starter Webpack Parts
 
 [![npm](https://img.shields.io/npm/v/ljas-webpack.svg?colorB=brightgreen)](https://npmjs.com/package/ljas-webpack) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/mattlean/ljas-webpack/blob/master/LICENSE)
